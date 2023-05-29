@@ -126,7 +126,7 @@ class UsersController extends Controller
         return (bool)((User::where('email', $email)->first()));
     }
 
-    /**
+    /**<
      * @param Request $request
      * @param User $user
      * @return string
@@ -134,11 +134,9 @@ class UsersController extends Controller
     private function handleImageRequestData(Request $request, User $user): string
     {
         $imageName = 'uploads/images/' . time(). '.' . $request->image->extension();
-        $user->update([
-            'image', $imageName
-        ]);
         $request->image->move(public_path('uploads/images'), $imageName);
 
         return $imageName;
     }
 }
+
