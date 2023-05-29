@@ -80,7 +80,7 @@ class UsersController extends Controller
                 }
                 try {
                     if ($request->has('image')) {
-                        $validated['image'] = $this->handleImageRequestData($request, $user);
+                        $validated['image'] = $this->handleImageRequestData($request);
                     }
                     $user->update($validated);
                     session()->flash('message', __('User was updated'));
@@ -126,12 +126,11 @@ class UsersController extends Controller
         return (bool)((User::where('email', $email)->first()));
     }
 
-    /**<
+    /**
      * @param Request $request
-     * @param User $user
      * @return string
      */
-    private function handleImageRequestData(Request $request, User $user): string
+    private function handleImageRequestData(Request $request): string
     {
         $imageName = 'uploads/images/' . time(). '.' . $request->image->extension();
         $request->image->move(public_path('uploads/images'), $imageName);
