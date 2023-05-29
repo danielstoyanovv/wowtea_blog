@@ -83,7 +83,7 @@ class UsersController extends Controller
                         $validated['image'] = $this->handleImageRequestData($request, $user);
                     }
                     $user->update($validated);
-                    session()->flash('message', _('User was updated'));
+                    session()->flash('message', __('User was updated'));
                     return redirect()->action([self::class, 'edit'], ['user' => $user->id]);
 
                 } catch (\Exception $exception) {
