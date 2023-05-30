@@ -21,16 +21,22 @@
                             <td class="">{{ $user->email }}</td>
                             <td class="">{{ $user->created_at  }}</td>
                             <td class="">
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{ __('Select') }}
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}">{{ __('Edit') }}</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                @if(Auth::user()->id === 1 || Auth::user()->id === $user->id)
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            {{ __('Select') }}
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('users.edit', $user->id) }}">
+                                                    {{ __('Edit') }}
+                                                </a>
+
+                                            </li>
+                                        </ul>
+                                    </div>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
