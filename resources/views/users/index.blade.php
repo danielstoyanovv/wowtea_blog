@@ -21,7 +21,7 @@
                             <td class="">{{ $user->email }}</td>
                             <td class="">{{ $user->created_at  }}</td>
                             <td class="">
-                                @if(Auth::user()->id === 1 || Auth::user()->id === $user->id)
+                                @if(!empty(Auth::user()) && (Auth::user()->id === 1 || Auth::user()->id === $user->id))
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
