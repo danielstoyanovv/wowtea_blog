@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        @if (count($errors) > 0)
+        @if ($errors->any())
             <ul class="list-group">
                 @foreach ($errors->all() as $error)
                     <li class="list-group-item list-group-item-danger">{{ $error }}</li>
