@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Http\Requests\UserRequest;
-use function Symfony\Component\Translation\t;
 
 class UsersController extends Controller
 {
@@ -18,7 +18,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        return view('users.index', ['users' => User::paginate(10)]);
+        return view('admin.users.index', ['users' => User::paginate(10)]);
     }
 
     /**
@@ -61,36 +61,35 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        return view('users.edit', ['user' => User::find($id)]);
+        return view('admin.users.edit', ['user' => User::find($id)]);
     }
 
     /**
      * @param UserRequest $request
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse|void
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UserRequest $request, $id)
+    public function update(UserRequest $request, User $user)
     {
-        if ($user = User::find($id)) {
-            if ($request->getMethod() == "PATCH") {
-                $validated = $request->validated();
-                if (!empty($this->handleUserExistsData($request, $user)['exists'])) {
-                    session()->flash('message', sprintf("%s already exists", $request->get('email')));
-                    return redirect()->action([self::class, 'edit'], ['user' => $user->id]);
+        if ($request->getMethod() == "PATCH") {
+            $validated = $request->validated();
+            if (!empty($this->handleUserExistsData($request, $user)['exists'])) {
+                session()->flash('message', sprintf("%s already exists", $request->get('email')));
+                return redirect()->action([self::class, 'edit'], ['user' => $user->id]);
+            }
+            try {
+                if ($request->has('image')) {
+                    $validated['image'] = \App\Helpers\ImageUploader::handleImageRequestData($request);
                 }
-                try {
-                    if ($request->has('image')) {
-                        $validated['image'] = $this->handleImageRequestData($request);
-                    }
-                    $user->update($validated);
-                    session()->flash('message', __('User was updated'));
-                    return redirect()->action([self::class, 'edit'], ['user' => $user->id]);
+                $user->update($validated);
+                session()->flash('message', __('User was updated'));
+                return redirect()->action([self::class, 'edit'], ['user' => $user->id]);
 
-                } catch (\Exception $exception) {
-                    Log::error($exception->getMessage());
-                }
+            } catch (\Exception $exception) {
+                Log::error($exception->getMessage());
             }
         }
+
         throw new NotFoundHttpException();
     }
 
@@ -124,18 +123,6 @@ class UsersController extends Controller
     private function checkIfEmailExists(string $email): bool
     {
         return (bool)((User::where('email', $email)->first()));
-    }
-
-    /**
-     * @param Request $request
-     * @return string
-     */
-    private function handleImageRequestData(Request $request): string
-    {
-        $imageName = 'uploads/images/' . time(). '.' . $request->image->extension();
-        $request->image->move(public_path('uploads/images'), $imageName);
-
-        return $imageName;
     }
 }
 

@@ -11,7 +11,12 @@
             </ul>
         @endif
 
-        <h3>{{ __('Edit') }}</h3>
+        <div class="col-8">
+            <h3>{{ __('Edit') }}</h3>
+        </div>
+        <div class="col-4">
+            <a href="{{ route('users.index')  }}" class="btn btn-info float-end">{{ __('Back') }}</a>
+        </div>
         <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
             @method('PATCH')
             @csrf
