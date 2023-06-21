@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Shop\PayPalController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +22,17 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::resource('/users', UsersController::class);
+Route::group(['prefix' => 'admin'], function () {
+    Route::resource('/users', UsersController::class);
+    Route::resource('/products', \App\Http\Controllers\Admin\ProductsController::class);
+});
 
+Route::group(['prefix' => 'shop'], function () {
+    // Checkout
+    Route::group(['prefix' => 'checkout'], function () {
+        Route::get('create-transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+        Route::post('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+        Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+        Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
+    });
+});
