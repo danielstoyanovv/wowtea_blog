@@ -7,15 +7,6 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 class PayPalController extends Controller
 {
     /**
-     * create transaction.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function createTransaction()
-    {
-        return view('shop.transaction');
-    }
-    /**
      * process transaction.
      *
      * @return \Illuminate\Http\Response
@@ -35,7 +26,7 @@ class PayPalController extends Controller
                 0 => [
                     "amount" => [
                         "currency_code" => "USD",
-                        "value" => "1000.00"
+                        "value" => $request->input('price')
                     ]
                 ]
             ]
@@ -48,12 +39,12 @@ class PayPalController extends Controller
                 }
             }
             return redirect()
-                ->route('createTransaction')
-                ->with('error', 'Something went wrong.');
+                ->route('shop-products')
+                ->with('message', 'Something went wrong.');
         } else {
             return redirect()
-                ->route('createTransaction')
-                ->with('error', $response['message'] ?? 'Something went wrong.');
+                ->route('shop-products')
+                ->with('message', $response['message'] ?? 'Something went wrong.');
         }
     }
     /**
@@ -69,12 +60,12 @@ class PayPalController extends Controller
         $response = $provider->capturePaymentOrder($request['token']);
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             return redirect()
-                ->route('createTransaction')
-                ->with('success', 'Transaction complete.');
+                ->route('shop-products')
+                ->with('message', 'Transaction complete.');
         } else {
             return redirect()
-                ->route('createTransaction')
-                ->with('error', $response['message'] ?? 'Something went wrong.');
+                ->route('shop-products')
+                ->with('message', $response['message'] ?? 'Something went wrong.');
         }
     }
     /**
@@ -85,7 +76,7 @@ class PayPalController extends Controller
     public function cancelTransaction(Request $request)
     {
         return redirect()
-            ->route('createTransaction')
-            ->with('error', $response['message'] ?? 'You have canceled the transaction.');
+            ->route('shop-products')
+            ->with('message', $response['message'] ?? 'You have canceled the transaction.');
     }
 }

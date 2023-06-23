@@ -1,14 +1,8 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <form method="POST" action="{{ route('processTransaction') }}">
-            @csrf
-            <div class="mb-3 mt-3">
-                <input type="submit" class="btn btn-primary form-control" value="{{ 'Pay' }}">
-            </div>
-        </form>
+<form method="POST" action="{{ route('processTransaction') }}">
+    @csrf
+    <div class="mb-3 mt-3">
+        <input type="hidden" name="price" value="{{ $price }}">
+        <input type="hidden" name="product_id" value="{{ $product }}">
+        <input type="submit" class="btn btn-primary form-control" value="{{ 'Pay' }}">
     </div>
-</div>
-@endsection
+</form>
