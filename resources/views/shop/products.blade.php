@@ -41,26 +41,20 @@
                     _token: '{!! csrf_token() !!}',
                     qty: $(this).parent().find('.qty').val()
                 };
-                var $addToCartButton = $(this)
-
+                var currentCartProductsCount = parseInt($('#cart-products-count').html());
                 $.ajax({
                     type: "POST",
                     url: $(this).parent().attr('action'),
                     data: formData,
                     dataType: "json",
                     encode: true,
+                    context: this
                 }).done(function (data) {
-                    const obj = JSON.parse(data);
-                    console.log(obj.productExistsInCart);
-
-                    if (!obj.productExistsInCart) {
-                        var currentQty = parseInt($addToCartButton.parent().find('.qty').val());
-                        var updatedQty = currentQty + 1;
-                        $addToCartButton.parent().find('.qty').val(updatedQty)
+                    if (data.productExistsInCart === false) {
+                        var updatedQty = currentCartProductsCount + 1;
+                        $('#cart-products-count').html(updatedQty);
                     }
                 });
-                window.scrollTo(0, 0);
-
                 event.preventDefault();
             });
         });

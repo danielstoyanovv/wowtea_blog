@@ -10,6 +10,6 @@ class CartCount
      */
     public static function products(): int
     {
-        return !empty(Cart::find(session('cart_id'))) ? Cart::find(session('cart_id'))->getCartItem->count() : 0;
+        return !empty($cart = Cart::find(session('cart_id'))) ? $cart->getCartItem->count() : 0;
     }
 }
