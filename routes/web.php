@@ -31,8 +31,11 @@ Route::middleware('auth')->group(function () {
 
 Route::group(['prefix' => 'shop'], function () {
     Route::get('/products', [\App\Http\Controllers\Shop\ProductsController::class, 'index'])->name('shop-products');
+    Route::get('/checkout', [\App\Http\Controllers\Shop\CheckoutController::class, 'index'])->name('checkout');
     Route::group(['prefix' => 'cart'], function () {
         Route::post('/add-product', [\App\Http\Controllers\Shop\CartController::class, 'addProduct'])->name('addProduct');
+        Route::post('/decrease-product-qty', [\App\Http\Controllers\Shop\CartController::class, 'decreaseProductQty'])->name('decreaseProductQty');
+        Route::post('/increase-product-qty', [\App\Http\Controllers\Shop\CartController::class, 'increaseProductQty'])->name('increaseProductQty');
     });
     // Checkout
     Route::group(['prefix' => 'checkout'], function () {

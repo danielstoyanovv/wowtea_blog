@@ -30,9 +30,6 @@ class CartController extends Controller
                         'cart_id' => $request->getSession()->get('cart_id')
                     ])->get()->first();
 
-
-                    $productExistsInCart = (bool)$checkProduct;
-
                     if ($cart = $this->addToCart(
                         $request->get('product_id'),
                         $request->get('qty'),
@@ -45,7 +42,7 @@ class CartController extends Controller
 
                     return response()->json([
                         'success' => true,
-                        'productExistsInCart' => $productExistsInCart
+                        'productExistsInCart' => (bool)$checkProduct
                     ]);
                 }
             }
@@ -120,4 +117,70 @@ class CartController extends Controller
         ])->create();
     }
 
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function decreaseProductQty(Request $request): JsonResponse
+    {
+        try {
+            if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'xmlhttprequest') {
+                if (!empty($request->get('product_id')) && !empty($request->get('cart_id'))) {
+                    $cartItem = CartItem::where([
+                        'product_id' => $request->get('product_id'),
+                        'cart_id' => $request->getSession()->get('cart_id')
+                    ])->get()->first();
+                    if ($cartItem->qty === 1) {
+                        CartItem::destroy($cartItem->id);
+                        return response()->json([
+                            'removed' => true,
+                        ]);
+                    }
+                    $cartItemCurrrentQty = (int) $cartItem->qty;
+                    $cartItem->update([
+                        'qty' => $cartItemCurrrentQty - 1
+                    ]);
+                    return response()->json([
+                        'updated' => true,
+                    ]);
+                }
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+        }
+        return response()->json([
+            'updated' => false
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function increaseProductQty(Request $request): JsonResponse
+    {
+        try {
+            if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'xmlhttprequest') {
+                if (!empty($request->get('product_id')) && !empty($request->get('cart_id'))) {
+                    $cartItem = CartItem::where([
+                        'product_id' => $request->get('product_id'),
+                        'cart_id' => $request->getSession()->get('cart_id')
+                    ])->get()->first();
+                    $cartItemCurrrentQty = (int) $cartItem->qty;
+                    $cartItem->update([
+                        'qty' => $cartItemCurrrentQty + 1
+                    ]);
+                    return response()->json([
+                        'updated' => true,
+                    ]);
+                }
+            }
+        } catch (\Exception $exception) {
+            Log::error($exception->getMessage());
+        }
+        return response()->json([
+            'updated' => false
+        ]);
+    }
 }
