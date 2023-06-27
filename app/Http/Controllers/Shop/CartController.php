@@ -23,13 +23,8 @@ class CartController extends Controller
     {
         try {
             if(strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') == 'xmlhttprequest') {
+
                 if (!empty($request->get('product_id')) && !empty($request->get('price')) && !empty($request->get('qty'))) {
-
-                    $checkProduct = CartItem::where([
-                        'product_id' => $request->get('product_id'),
-                        'cart_id' => $request->getSession()->get('cart_id')
-                    ])->get()->first();
-
                     if ($cart = $this->addToCart(
                         $request->get('product_id'),
                         $request->get('qty'),
@@ -42,7 +37,7 @@ class CartController extends Controller
 
                     return response()->json([
                         'success' => true,
-                        'productExistsInCart' => (bool)$checkProduct
+                        'products_action' => request()->headers->get('referer')
                     ]);
                 }
             }

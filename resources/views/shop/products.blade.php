@@ -41,7 +41,6 @@
                     _token: '{!! csrf_token() !!}',
                     qty: $(this).parent().find('.qty').val()
                 };
-                var currentCartProductsCount = parseInt($('#cart-products-count').html());
                 $.ajax({
                     type: "POST",
                     url: $(this).parent().attr('action'),
@@ -50,9 +49,15 @@
                     encode: true,
                     context: this
                 }).done(function (data) {
-                    if (data.productExistsInCart === false) {
-                        var updatedQty = currentCartProductsCount + 1;
-                        $('#cart-products-count').html(updatedQty);
+                    if (data.products_action) {
+                        $.ajax({
+                            type: "GET",
+                            url: data.products_action,
+                            encode: true,
+                            context: this
+                        }).done(function (data) {
+                            $('body').html(data);
+                        });
                     }
                 });
                 event.preventDefault();
