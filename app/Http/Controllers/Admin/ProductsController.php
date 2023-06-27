@@ -115,7 +115,9 @@ class ProductsController extends Controller
     public function destroy(Product $product)
     {
         try {
-            unlink(public_path($product->image));
+            if ($product->image) {
+                unlink(public_path($product->image));
+            }
             Product::destroy($product->id);
             session()->flash('message', __('Product was removed'));
         } catch (\Exception $exception) {
