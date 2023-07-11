@@ -3,15 +3,18 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use Illuminate\Http\RedirectResponse;
 
 class PayPalController extends Controller
 {
+    const REDIRECT_ACTION = 'shop-products';
+
     /**
      * process transaction.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function processTransaction(Request $request)
+    public function processTransaction(Request $request): RedirectResponse
     {
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
@@ -39,20 +42,20 @@ class PayPalController extends Controller
                 }
             }
             return redirect()
-                ->route('shop-products')
-                ->with('message', 'Something went wrong.');
+                ->route(self::REDIRECT_ACTION)
+                ->with('message', __('Something went wrong.'));
         } else {
             return redirect()
-                ->route('shop-products')
-                ->with('message', $response['message'] ?? 'Something went wrong.');
+                ->route(self::REDIRECT_ACTION)
+                ->with('message', $response['message'] ?? __('Something went wrong.'));
         }
     }
     /**
      * success transaction.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function successTransaction(Request $request)
+    public function successTransaction(Request $request): RedirectResponse
     {
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
@@ -60,23 +63,24 @@ class PayPalController extends Controller
         $response = $provider->capturePaymentOrder($request['token']);
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             return redirect()
-                ->route('shop-products')
-                ->with('message', 'Transaction complete.');
+                ->route(self::REDIRECT_ACTION)
+                ->with('message', __('Transaction complete.'));
         } else {
             return redirect()
-                ->route('shop-products')
-                ->with('message', $response['message'] ?? 'Something went wrong.');
+                ->route(self::REDIRECT_ACTION)
+                ->with('message', $response['message'] ?? __('Something went wrong.'));
         }
     }
+
     /**
      * cancel transaction.
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function cancelTransaction(Request $request)
+    public function cancelTransaction(Request $request): RedirectResponse
     {
         return redirect()
-            ->route('shop-products')
-            ->with('message', $response['message'] ?? 'You have canceled the transaction.');
+            ->route(self::REDIRECT_ACTION)
+            ->with('message', $response['message'] ?? __('You have canceled the transaction.'));
     }
 }
