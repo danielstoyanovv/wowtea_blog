@@ -51,7 +51,11 @@
                             {!! CartCount::subtotal() !!}
                         </div>
                     </div>
-
+                    <form action="{{ route('processTransaction') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="price" class="price" value="{!! CartCount::subtotal() !!}">
+                        <input type="submit" class="btn btn-primary form-control add-product-button" value="{{ 'Pay' }}">
+                    </form>
                 </div>
             @endif
         </div>
