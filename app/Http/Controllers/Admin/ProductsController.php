@@ -41,11 +41,7 @@ class ProductsController extends Controller
     {
         try {
             if ($request->getMethod() == "POST") {
-                $productData = [
-                    'name' => $request->input('name'),
-                    'description' => $request->input('description'),
-                    'price' => $request->input('price')
-                ];
+                $productData = $request->except('_token');
                 if ($request->has('image')) {
                     $productData['image'] = \App\Helpers\ImageUploader::handleImageRequestData($request);
                 }
