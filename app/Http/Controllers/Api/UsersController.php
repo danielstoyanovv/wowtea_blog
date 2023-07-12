@@ -71,10 +71,7 @@ class UsersController extends Controller
      */
     public function update(UserRequest $request, User $user): UsersResource
     {
-        $user->update([
-            'name' => $request->input('name'),
-            'email' => $request->input('email')
-        ]);
+        $user->update($request->all());
 
         return new UsersResource($user);
     }
