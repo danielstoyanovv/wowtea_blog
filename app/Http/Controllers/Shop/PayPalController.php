@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers\Shop;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
