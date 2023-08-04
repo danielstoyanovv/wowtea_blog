@@ -3,7 +3,8 @@
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Shop\PayPalController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Shop\PaymentController;
+use App\Http\Controllers\Shop\AdyenController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,3 +45,12 @@ Route::group(['prefix' => 'shop'], function () {
         Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
     });
 });
+
+Route::get('/pay', [PaymentController::class, 'pay']);
+Route::get('/pay2', [PaymentController::class, 'pay2']);
+Route::get('/components-checkout', [PaymentController::class, 'componentsCheckout']);
+Route::get('/pay-success', [PaymentController::class, 'paySuccess'])->name('pay.success');
+Route::get('/test-checkout', [PaymentController::class, 'testCheckout']);
+
+Route::get('/show-checkout', [AdyenController::class, 'showCheckout'])->name('checkout');
+Route::post('/make-payment', [AdyenController::class, 'makePayment'])->name('make-payment');
