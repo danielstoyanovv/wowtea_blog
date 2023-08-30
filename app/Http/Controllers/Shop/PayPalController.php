@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use Database\Factories\PaymentApisResponseHistoryFactory;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Illuminate\Http\RedirectResponse;
@@ -21,7 +22,8 @@ class PayPalController extends Controller
         $provider = new PayPalClient;
         $provider->setApiCredentials(config('paypal'));
         $paypalToken = $provider->getAccessToken();
-        $response = $provider->createOrder([
+
+        $createOrderParams = [
             "intent" => "CAPTURE",
             "application_context" => [
                 "return_url" => route('successTransaction'),
@@ -35,7 +37,15 @@ class PayPalController extends Controller
                     ]
                 ]
             ]
-        ]);
+        ];
+        $response = $provider->createOrder($createOrderParams);
+        PaymentApisResponseHistoryFactory::new([
+            'content' => json_encode($createOrderParams, true),
+            'response' => json_encode($response, true),
+            'method' => 'createOrder',
+            'provider' => 'Paypal',
+            'provider_config' => json_encode(config('paypal'), true)
+        ])->create();
         if (isset($response['id']) && $response['id'] != null) {
             // redirect to approve href
             foreach ($response['links'] as $links) {
