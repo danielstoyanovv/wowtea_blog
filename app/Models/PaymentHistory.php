@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentsHistory extends Model
+class PaymentHistory extends Model
 {
     use HasFactory;
+
+    protected $table = 'payments_history';
 
     protected $fillable = [
         'method',

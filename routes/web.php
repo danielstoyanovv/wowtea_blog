@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Shop\PayPalController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PaymentLogsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,6 +26,15 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => 'admin'], function () {
         Route::resource('/users', UsersController::class);
         Route::resource('/products', \App\Http\Controllers\Admin\ProductsController::class);
+        Route::group(['prefix' => 'payment-logs'], function () {
+            Route::get('/payments-history', [PaymentLogsController::class, 'paymentsHistory'])
+                ->name('paymentsHistory');
+            Route::get('/payments-apis-response-history', [PaymentLogsController::class, 'paymentsApisResponseHistory'])
+                ->name('paymentsApisResponseHistory');
+            Route::get('{paymentApisResponseHistory}/payment-apis-response-history-details', [
+                PaymentLogsController::class, 'paymentApisResponseHistoryDetails'
+            ])->name('paymentApisResponseHistoryDetails');
+        });
     });
 });
 
