@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Shop\PayPalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PaymentLogsController;
+use App\Http\Controllers\Admin\Checkout\TestPaypalController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,6 +35,18 @@ Route::middleware('auth')->group(function () {
             Route::get('{paymentApisResponseHistory}/payment-apis-response-history-details', [
                 PaymentLogsController::class, 'paymentApisResponseHistoryDetails'
             ])->name('paymentApisResponseHistoryDetails');
+        });
+        Route::group(['prefix' => 'checkout'], function () {
+            Route::group(['prefix' => 'test-paypal'], function () {
+                Route::get('/', [TestPaypalController::class, 'index'])
+                    ->name('admin_test_paypal_page');
+                Route::post('/payment', [TestPaypalController::class, 'payment'])
+                    ->name('admin_test_paypal');
+                Route::get('/success-transaction', [TestPaypalController::class, 'successTransaction'])
+                    ->name('admin_test_paypal_success');
+                Route::get('/cancel-transaction', [TestPaypalController::class, 'cancelTransaction'])
+                    ->name('admin_test_paypal_cancel');
+            });
         });
     });
 });
