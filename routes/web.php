@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PaymentLogsController;
 use App\Http\Controllers\Admin\Checkout\TestPaypalController;
 use App\Http\Controllers\Admin\Checkout\TestAdyenController;
-use App\Http\Controllers\Shop\AdyenController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,8 +20,6 @@ use App\Http\Controllers\Shop\AdyenController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::post('/adyen/webhook', [AdyenController::class, 'webhook'])->name('webhook');
 
 Auth::routes();
 

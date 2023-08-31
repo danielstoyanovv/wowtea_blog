@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Shop\AdyenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('users', \App\Http\Controllers\Api\UsersController::class);
+
+Route::post('/adyen/webhook', [AdyenController::class, 'webhook'])->name('webhook');
