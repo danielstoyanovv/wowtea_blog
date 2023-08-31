@@ -63,8 +63,8 @@ class AdyenController extends Controller
                         "contract" => "RECURRING",
                         "recurringDetailReference" => $recurringDetailReference,
                         "recurringProcessingModel" => $recurringProcessingModel,
-                        //       "frequency" => "daily"
-                        "frequency" => "hourly"
+                               "frequency" => "daily"
+                       // "frequency" => "hourly"
                     ]
                 ];
                 $response = $recurring->listRecurringDetails($paymentData);
