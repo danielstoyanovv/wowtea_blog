@@ -90,7 +90,6 @@ class TestAdyenController extends Controller
                 $service = new \Adyen\Service\Checkout($client);
 
                 $nextPaymentReference = uniqid();
-                session(['adyen_next_payment_reference' => $nextPaymentReference]);
 
                 $params = [
                     "amount" => [

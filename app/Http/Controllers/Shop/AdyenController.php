@@ -30,6 +30,7 @@ class AdyenController extends Controller
                 $storedPaymentMethodId = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
                 $recurringDetailReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
                 $recurringProcessingModel = "Subscription";
+                $merchantReference = $notification["notificationItems"][0]["NotificationRequestItem"]["merchantReference"];
                 $client = new Client();
                 $client->setApplicationName('Test Application');
                 $client->setEnvironment(\Adyen\Environment::TEST);
@@ -38,11 +39,8 @@ class AdyenController extends Controller
                 var_dump($shopperReference);
                 var_dump($storedPaymentMethodId);
                 var_dump($recurringDetailReference);
-
+                var_dump($merchantReference);
                 var_dump($recurringProcessingModel);
-                var_dump(session('adyen_next_payment_reference'));
-
-
 
                 $recurring = new Recurring($client);
 
@@ -52,7 +50,7 @@ class AdyenController extends Controller
                     "shopperInteraction" => "Ecommerce",
 
                     'merchantAccount' => "AtopWowTeaECOM",
-                    "reference" => "100",
+                    "reference" => $merchantReference,
                     "amount" => [
                         "currency" => "USD",
                         "value" => 2000
