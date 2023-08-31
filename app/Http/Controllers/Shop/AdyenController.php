@@ -17,10 +17,10 @@ class AdyenController extends Controller
     public function webhook(Request $request)
     {
 
-        Log::info($request->all());
-        Log::info($request->getContent());
+     //   Log::info($request->all());
+   //     Log::info($request->getContent());
         $notification = json_decode($request->getContent(), true);
-        var_dump($notification["notificationItems"]["NotificationRequestItem"]["eventCode"]);
+        var_dump($notification["notificationItems"]);
         return response()->json(["[accepted]", 200]);
     }
 
