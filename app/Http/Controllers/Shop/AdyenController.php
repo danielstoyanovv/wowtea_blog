@@ -33,49 +33,58 @@ class AdyenController extends Controller
             $client->setEnvironment(\Adyen\Environment::TEST);
             $client->setXApiKey("AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7");
 
-            $recurring = new Recurring($client);
+            var_dump($shopperReference);
+            var_dump($storedPaymentMethodId);
+            var_dump($recurringDetailReference);
 
-            $paymentData = [
-                'permit' => true,
-                "shopperReference" => $shopperReference,
-                "shopperInteraction" => "Ecommerce",
+            var_dump($recurringProcessingModel);
+            var_dump(session('adyen_next_payment_reference'));
 
-                'merchantAccount' => "AtopWowTeaECOM",
-                "reference" => "100",
-                "amount" => [
-                    "currency" => "USD",
-                    "value" => 2000
-                ],
-                "paymentMethod" => [
-                    "type" => "scheme",
-                    "storedPaymentMethodId" => $storedPaymentMethodId
-                ],
-                "recurring" => [
-                    "contract" => "RECURRING",
-                    "recurringDetailReference" => $recurringDetailReference,
-                    "recurringProcessingModel" => $recurringProcessingModel,
-//                    "frequency" => "daily"
-                    "frequency" => "hourly"
-                ]
-            ];
-            $response = $recurring->listRecurringDetails($paymentData);
+
+
+//            $recurring = new Recurring($client);
 //
-            $client = new GuzzleHttp();
-            $response = $client->post('https://pal-test.adyen.com/pal/servlet/Recurring/v68/scheduleAccountUpdater', [
-                'headers' => [
-                    'x-api-key' => "AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7",
-                ],
-                'json' => [
-                    'merchantAccount' => 'AtopWowTeaECOM',
-                    "reference" => session('adyen_next_payment_reference'),
-                    "card" => [
-                        "expiryMonth" => "03",
-                        "expiryYear" => "2030",
-                        "holderName" => "Adyen Test",
-                        "number" => "4111111111111111"
-                    ]
-                ],
-            ]);
+//            $paymentData = [
+//                'permit' => true,
+//                "shopperReference" => $shopperReference,
+//                "shopperInteraction" => "Ecommerce",
+//
+//                'merchantAccount' => "AtopWowTeaECOM",
+//                "reference" => "100",
+//                "amount" => [
+//                    "currency" => "USD",
+//                    "value" => 2000
+//                ],
+//                "paymentMethod" => [
+//                    "type" => "scheme",
+//                    "storedPaymentMethodId" => $storedPaymentMethodId
+//                ],
+//                "recurring" => [
+//                    "contract" => "RECURRING",
+//                    "recurringDetailReference" => $recurringDetailReference,
+//                    "recurringProcessingModel" => $recurringProcessingModel,
+    //                "frequency" => "daily"
+//                    "frequency" => "hourly"
+//                ]
+//            ];
+//            $response = $recurring->listRecurringDetails($paymentData);
+
+//            $client = new GuzzleHttp();
+//            $response = $client->post('https://pal-test.adyen.com/pal/servlet/Recurring/v68/scheduleAccountUpdater', [
+//                'headers' => [
+//                    'x-api-key' => "AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7",
+//                ],
+//                'json' => [
+//                    'merchantAccount' => 'AtopWowTeaECOM',
+//                    "reference" => session('adyen_next_payment_reference'),
+//                    "card" => [
+//                        "expiryMonth" => "03",
+//                        "expiryYear" => "2030",
+//                        "holderName" => "Adyen Test",
+//                        "number" => "4111111111111111"
+//                    ]
+//                ],
+//            ]);
         }
         return response()->json(["[accepted]", 200]);
     }
