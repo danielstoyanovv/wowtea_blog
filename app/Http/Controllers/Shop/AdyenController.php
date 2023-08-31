@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Adyen\Service\Recurring;
 use GuzzleHttp\Client as GuzzleHttp;
+use Adyen\AdyenException;
 
 
 class AdyenController extends Controller
@@ -19,55 +20,56 @@ class AdyenController extends Controller
      */
     public function webhook(Request $request)
     {
-     //   Log::info($request->all());
-   //     Log::info($request->getContent());
-        $notification = json_decode($request->getContent(), true);
-        var_dump($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"]);
-        if ($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"] === "RECURRING_CONTRACT") {
-            $shopperReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]["shopperReference"];
-            $storedPaymentMethodId = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
-            $recurringDetailReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
-            $recurringProcessingModel = "Subscription";
-            $client = new Client();
-            $client->setApplicationName('Test Application');
-            $client->setEnvironment(\Adyen\Environment::TEST);
-            $client->setXApiKey("AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7");
+        try {
+            //   Log::info($request->all());
+            //     Log::info($request->getContent());
+            $notification = json_decode($request->getContent(), true);
+            var_dump($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"]);
+            if ($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"] === "RECURRING_CONTRACT") {
+                $shopperReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]["shopperReference"];
+                $storedPaymentMethodId = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
+                $recurringDetailReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
+                $recurringProcessingModel = "Subscription";
+                $client = new Client();
+                $client->setApplicationName('Test Application');
+                $client->setEnvironment(\Adyen\Environment::TEST);
+                $client->setXApiKey("AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7");
 
-            var_dump($shopperReference);
-            var_dump($storedPaymentMethodId);
-            var_dump($recurringDetailReference);
+                var_dump($shopperReference);
+                var_dump($storedPaymentMethodId);
+                var_dump($recurringDetailReference);
 
-            var_dump($recurringProcessingModel);
-            var_dump(session('adyen_next_payment_reference'));
+                var_dump($recurringProcessingModel);
+                var_dump(session('adyen_next_payment_reference'));
 
 
 
-//            $recurring = new Recurring($client);
-//
-//            $paymentData = [
-//                'permit' => true,
-//                "shopperReference" => $shopperReference,
-//                "shopperInteraction" => "Ecommerce",
-//
-//                'merchantAccount' => "AtopWowTeaECOM",
-//                "reference" => "100",
-//                "amount" => [
-//                    "currency" => "USD",
-//                    "value" => 2000
-//                ],
-//                "paymentMethod" => [
-//                    "type" => "scheme",
-//                    "storedPaymentMethodId" => $storedPaymentMethodId
-//                ],
-//                "recurring" => [
-//                    "contract" => "RECURRING",
-//                    "recurringDetailReference" => $recurringDetailReference,
-//                    "recurringProcessingModel" => $recurringProcessingModel,
-    //                "frequency" => "daily"
-//                    "frequency" => "hourly"
-//                ]
-//            ];
-//            $response = $recurring->listRecurringDetails($paymentData);
+                $recurring = new Recurring($client);
+
+                $paymentData = [
+                    'permit' => true,
+                    "shopperReference" => $shopperReference,
+                    "shopperInteraction" => "Ecommerce",
+
+                    'merchantAccount' => "AtopWowTeaECOM",
+                    "reference" => "100",
+                    "amount" => [
+                        "currency" => "USD",
+                        "value" => 2000
+                    ],
+                    "paymentMethod" => [
+                        "type" => "scheme",
+                        "storedPaymentMethodId" => $storedPaymentMethodId
+                    ],
+                    "recurring" => [
+                        "contract" => "RECURRING",
+                        "recurringDetailReference" => $recurringDetailReference,
+                        "recurringProcessingModel" => $recurringProcessingModel,
+                        //       "frequency" => "daily"
+                        "frequency" => "hourly"
+                    ]
+                ];
+                $response = $recurring->listRecurringDetails($paymentData);
 
 //            $client = new GuzzleHttp();
 //            $response = $client->post('https://pal-test.adyen.com/pal/servlet/Recurring/v68/scheduleAccountUpdater', [
@@ -85,7 +87,14 @@ class AdyenController extends Controller
 //                    ]
 //                ],
 //            ]);
+            }
+        } catch (AdyenException $exception) {
+            var_dump($exception->getCode());
+            var_dump($exception->getFile());
+            var_dump($exception->getLine());
+            dd($exception->getMessage());
         }
+
         return response()->json(["[accepted]", 200]);
     }
 
