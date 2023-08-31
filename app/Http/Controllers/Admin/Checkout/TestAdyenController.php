@@ -52,14 +52,12 @@ class TestAdyenController extends Controller
 
                 $service = new \Adyen\Service\Checkout($client);
 
-                $reference = rand(2, 4);
-
                 $params = [
                     "amount" => [
                         "currency" => "USD",
                         "value" => 0
                     ],
-                    "reference" => $reference,
+                    "reference" => uniqid(),
                     "paymentMethod" => [
                         "type" => "scheme",
                         "encryptedCardNumber" => "test_4111111111111111",
@@ -91,12 +89,15 @@ class TestAdyenController extends Controller
 
                 $service = new \Adyen\Service\Checkout($client);
 
+                $nextPaymentReference = uniqid();
+                session(['adyen_next_payment_reference' => $nextPaymentReference]);
+
                 $params = [
                     "amount" => [
                         "currency" => "USD",
                         "value" => 2000
                     ],
-                    "reference" => $reference + 1,
+                    "reference" => $nextPaymentReference,
                     "paymentMethod" => [
                         "type" => "scheme",
                         "storedPaymentMethodId" => $storedPaymentMethodId
