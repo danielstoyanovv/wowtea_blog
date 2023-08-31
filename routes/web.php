@@ -5,6 +5,7 @@ use App\Http\Controllers\Shop\PayPalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PaymentLogsController;
 use App\Http\Controllers\Admin\Checkout\TestPaypalController;
+use App\Http\Controllers\Admin\Checkout\TestAdyenController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,6 +47,12 @@ Route::middleware('auth')->group(function () {
                     ->name('admin_test_paypal_success');
                 Route::get('/cancel-transaction', [TestPaypalController::class, 'cancelTransaction'])
                     ->name('admin_test_paypal_cancel');
+            });
+            Route::group(['prefix' => 'test-adyen'], function () {
+                Route::get('/', [TestAdyenController::class, 'index'])
+                    ->name('admin_test_adyen_page');
+                Route::post('/process', [TestAdyenController::class, 'process'])
+                    ->name('admin_test_adyen_process');
             });
         });
     });
