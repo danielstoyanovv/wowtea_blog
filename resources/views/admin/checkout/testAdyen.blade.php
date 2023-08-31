@@ -3,7 +3,8 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-           <form method="post" action="{{ route('admin_test_adyen_process') }}">
+            <h3>{{ __('Process form') }}</h3>
+            <form method="post" action="{{ route('admin_test_adyen_process') }}">
                @csrf
                <p>
                    <select name="countries" required>
@@ -22,6 +23,28 @@
                </p>
                <input class="form-control" type="submit" value="{{ __('Send') }}">
            </form>
+
+            <h3>{{ __('Subscription form') }}</h3>
+            <form method="post" action="{{ route('admin_test_adyen_subscription') }}">
+                @csrf
+                <input placeholder="{{ __('Email') }}" type="text" name="email" required>
+                <p>
+                    <select name="payment_methods" required>
+                        <option value="">{{ __('Choose payment method') }}</option>
+                        <option value="card">{{ __('Card') }}</option>
+                    </select>
+                </p>
+                <p>
+                    <select name="subscription_intervals" required>
+                        <option value="">{{ __('Choose subscription interval') }}</option>
+                        <option value="21">21</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                    </select>
+                </p>
+                <input class="form-control" type="submit" value="{{ __('Send') }}">
+            </form>
+
         </div>
     </div>
 @endsection
