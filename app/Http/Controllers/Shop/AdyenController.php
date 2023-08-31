@@ -20,7 +20,7 @@ class AdyenController extends Controller
         Log::info($request->all());
         Log::info($request->getContent());
         $notification = json_decode($request->getContent(), true);
-        var_dump($notification);
+        var_dump($notification["notificationItems"]["NotificationRequestItem"]["eventCode"]);
         return response()->json(["[accepted]", 200]);
     }
 
