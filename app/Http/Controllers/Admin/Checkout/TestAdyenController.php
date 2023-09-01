@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\Checkout;
 
 use App\Http\Controllers\Controller;
 use Database\Factories\PaymentApisResponseHistoryFactory;
+use GuzzleHttp\Client as GuzzleHttp;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -132,6 +134,36 @@ class TestAdyenController extends Controller
                 Log::error($exception->getMessage());
             }
         }
+        return redirect()->action([self::class, 'index']);
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    public function webhook(): RedirectResponse
+    {
+        try {
+            $client = new GuzzleHttp();
+            $response = $client->post('https://wowcms.site/api/adyen/webhook', [
+                "json" => [
+                    "notificationItems" => [
+                        0 => [
+                            "NotificationRequestItem" => [
+                                "eventCode" => "Test"
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
+            $webhookCallResult = json_decode($response->getBody(), true);
+            if (in_array("[accepted]", $webhookCallResult)) {
+                session()->flash('message', __('Webhook was accepted'));
+                return redirect()->action([self::class, 'index']);
+            }
+        }  catch (GuzzleException $exception) {
+            Log::error($exception->getMessage());
+        }
+        session()->flash('message', __('Webhook not accepted'));
         return redirect()->action([self::class, 'index']);
     }
 }

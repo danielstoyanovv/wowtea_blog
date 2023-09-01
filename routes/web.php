@@ -55,6 +55,8 @@ Route::middleware('auth')->group(function () {
                     ->name('admin_test_adyen_process');
                 Route::post('/subscription', [TestAdyenController::class, 'subscription'])
                     ->name('admin_test_adyen_subscription');
+                Route::get('/webhook', [TestAdyenController::class, 'webhook'])
+                    ->name('admin_test_adyen_webhook');
             });
         });
     });

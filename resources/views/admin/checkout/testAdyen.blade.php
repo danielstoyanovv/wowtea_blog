@@ -44,7 +44,10 @@
                 </p>
                 <input class="form-control" type="submit" value="{{ __('Send') }}">
             </form>
-
+            <h3>{{ __('Test webhook') }}</h3>
+            <a class="btn btn-primary" href="{{ route("admin_test_adyen_webhook") }}">
+                {{ __('Send') }}
+            </a>
         </div>
     </div>
 @endsection
