@@ -39,9 +39,9 @@ class TestAdyenController extends Controller
 
     /**
      * @param Request $request
-     * @return Application|ResponseFactory|Response
+     * @return RedirectResponse
      */
-    public function subscription(Request $request): Application|ResponseFactory|Response
+    public function subscription(Request $request): RedirectResponse
     {
         if ($request->getMethod() == "POST") {
             try {
@@ -75,17 +75,11 @@ class TestAdyenController extends Controller
                 ];
                 $result = $service->payments($params);
 
-                $shopperReference = $result['additionalData']['recurring.shopperReference'];
-                $recurringDetailReference = $result['additionalData']['recurring.recurringDetailReference'];
-                $recurringProcessingModel = $result['additionalData']['recurringProcessingModel'];
                 $storedPaymentMethodId = $result['additionalData']['recurring.recurringDetailReference'];
 
-                var_dump($result['additionalData']['recurring.shopperReference']);
-                var_dump($result['additionalData']['recurring.recurringDetailReference']);
-                var_dump($result['pspReference']);
-
-                echo "<pre>";
-                print_r($result);
+                Log::info($result['additionalData']['recurring.shopperReference']);
+                Log::info($result['additionalData']['recurring.recurringDetailReference']);
+                Log::info($result['pspReference']);
 
                 $service = new \Adyen\Service\Checkout($client);
 
@@ -109,13 +103,14 @@ class TestAdyenController extends Controller
                 ];
 
                 $result = $service->payments($params);
+                session()->flash('message', __('Subscription was created'));
             } catch (AdyenException $exception) {
-                var_dump($exception->getCode());
-                var_dump($exception->getFile());
-                var_dump($exception->getLine());
-                dd($exception->getMessage());
+                Log::error($exception->getCode());
+                Log::error($exception->getFile());
+                Log::error($exception->getLine());
+                Log::error($exception->getMessage());
             }
         }
-        return response(null,204);
+        return redirect()->action([self::class, 'index']);
     }
 }
