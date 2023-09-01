@@ -9,8 +9,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\RedirectResponse;
 use Adyen\Client;
 use Adyen\AdyenException;
@@ -45,10 +43,16 @@ class TestAdyenController extends Controller
     {
         if ($request->getMethod() == "POST") {
             try {
+                $adyenClientConfig = [
+                    "application_name" => "Test Application",
+                    "environment" => \Adyen\Environment::TEST,
+                    "x-api-key" => "AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7"
+                ];
+
                 $client = new Client();
-                $client->setApplicationName('Test Application');
-                $client->setEnvironment(\Adyen\Environment::TEST);
-                $client->setXApiKey("AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7");
+                $client->setApplicationName($adyenClientConfig["application_name"]);
+                $client->setEnvironment($adyenClientConfig["environment"]);
+                $client->setXApiKey($adyenClientConfig["x-api-key"]);
 
                 $service = new \Adyen\Service\Checkout($client);
 
@@ -74,6 +78,14 @@ class TestAdyenController extends Controller
                     "returnUrl" => route("home")
                 ];
                 $result = $service->payments($params);
+
+                PaymentApisResponseHistoryFactory::new([
+                    'content' => json_encode($params, true),
+                    'response' => json_encode($result, true),
+                    'method' => 'subscription',
+                    'provider' => 'Adyen',
+                    'provider_config' => json_encode($adyenClientConfig, true)
+                ])->create();
 
                 $storedPaymentMethodId = $result['additionalData']['recurring.recurringDetailReference'];
 
@@ -103,6 +115,15 @@ class TestAdyenController extends Controller
                 ];
 
                 $result = $service->payments($params);
+
+                PaymentApisResponseHistoryFactory::new([
+                    'content' => json_encode($params, true),
+                    'response' => json_encode($result, true),
+                    'method' => 'subscription',
+                    'provider' => 'Adyen',
+                    'provider_config' => json_encode($adyenClientConfig, true)
+                ])->create();
+
                 session()->flash('message', __('Subscription was created'));
             } catch (AdyenException $exception) {
                 Log::error($exception->getCode());
