@@ -24,7 +24,6 @@ class AdyenController extends Controller
             //   Log::info($request->all());
             //     Log::info($request->getContent());
             $notification = json_decode($request->getContent(), true);
-            var_dump($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"]);
             if ($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"] === "RECURRING_CONTRACT") {
                 $shopperReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]["shopperReference"];
                 $storedPaymentMethodId = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
