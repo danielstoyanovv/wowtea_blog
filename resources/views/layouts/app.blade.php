@@ -81,6 +81,9 @@
                                     <a class="dropdown-item" href="{{ route('admin_test_adyen_page') }}">
                                         {{ __('Test Adyen') }}
                                     </a>
+                                    <a class="dropdown-item" href="{{ route('admin_test_adyen_webhook_response_history_page') }}">
+                                        {{ __('Webhook response history') }}
+                                    </a>
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

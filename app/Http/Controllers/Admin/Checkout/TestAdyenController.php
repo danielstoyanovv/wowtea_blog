@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Checkout;
 
 use App\Http\Controllers\Controller;
+use App\Models\WebhookResponseHistory;
 use Database\Factories\PaymentApisResponseHistoryFactory;
 use GuzzleHttp\Client as GuzzleHttp;
 use GuzzleHttp\Exception\GuzzleException;
@@ -166,4 +167,14 @@ class TestAdyenController extends Controller
         session()->flash('message', __('Webhook not accepted'));
         return redirect()->action([self::class, 'index']);
     }
+
+    /**
+     * @return Application|Factory|View
+     */
+     public function webhookResponseHistory(): View|Factory|Application
+     {
+         return view('admin.checkout.webhookResponseHistoryAdyen', [
+             'data' => WebhookResponseHistory::paginate(20)
+         ]);
+     }
 }
