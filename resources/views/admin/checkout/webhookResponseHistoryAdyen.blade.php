@@ -11,7 +11,6 @@
                     <table class="table table-borderless table-striped">
                         <tr>
                             <th class="table-light">{{ __('id') }}</th>
-                            <th class="table-light">{{ __('Response') }}</th>
                             <th class="table-light">{{ __('Event code') }}</th>
                             <th class="table-light">{{ __('Provider') }}</th>
                             <th class="table-light">{{ __('Created at') }}</th>
@@ -19,7 +18,6 @@
                         @foreach($data as $webhookResponseHistory)
                             <tr>
                                 <td class="">{{ $webhookResponseHistory->id }}</td>
-                                <td class="">{{$webhookResponseHistory->response }}</td>
                                 <td class="">{{ $webhookResponseHistory->eventCode }}</td>
                                 <td class="">{{ $webhookResponseHistory->provider }}</td>
                                 <td class="">{{ $webhookResponseHistory->created_at  }}</td>
