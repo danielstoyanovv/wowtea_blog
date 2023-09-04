@@ -14,6 +14,7 @@
                             <th class="table-light">{{ __('Event code') }}</th>
                             <th class="table-light">{{ __('Provider') }}</th>
                             <th class="table-light">{{ __('Created at') }}</th>
+                            <th class="table-light">{{ __('Action') }}</th>
                         </tr>
                         @foreach($data as $webhookResponseHistory)
                             <tr>

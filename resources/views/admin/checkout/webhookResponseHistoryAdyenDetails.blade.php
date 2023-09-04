@@ -7,7 +7,7 @@
                 <h3>{{ __('Details') }}</h3>
             </div>
             <div class="col-4">
-                <a href="{{ route('paymentsApisResponseHistory')  }}" class="btn btn-info float-end">{{ __('Back') }}</a>
+                <a href="{{ route('admin_test_adyen_webhook_response_history_page')  }}" class="btn btn-info float-end">{{ __('Back') }}</a>
             </div>
             @if ($data)
                 <div>
