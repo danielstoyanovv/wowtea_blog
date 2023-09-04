@@ -18,11 +18,11 @@
                         </tr>
                         @foreach($data as $webhookResponseHistory)
                             <tr>
-                                <td class="">{{ $product->id }}</td>
-                                <td class="">{{ $product->response }}</td>
-                                <td class="">{{ $product->eventCode }}</td>
-                                <td class="">{{ $product->provider }}</td>
-                                <td class="">{{ $product->created_at  }}</td>
+                                <td class="">{{ $webhookResponseHistory->id }}</td>
+                                <td class="">{{$webhookResponseHistory->response }}</td>
+                                <td class="">{{ $webhookResponseHistory->eventCode }}</td>
+                                <td class="">{{ $webhookResponseHistory->provider }}</td>
+                                <td class="">{{ $webhookResponseHistory->created_at  }}</td>
                                 <td class="">
 
                                 </td>
