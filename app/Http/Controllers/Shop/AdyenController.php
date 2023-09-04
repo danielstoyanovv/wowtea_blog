@@ -6,10 +6,9 @@ use Adyen\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use Adyen\Service\Recurring;
-use GuzzleHttp\Client as GuzzleHttp;
 use Adyen\AdyenException;
+use Database\Factories\WebhookResponseHistoryFactory;
 
 
 class AdyenController extends Controller
@@ -21,9 +20,12 @@ class AdyenController extends Controller
     public function webhook(Request $request)
     {
         try {
-            //   Log::info($request->all());
-            //     Log::info($request->getContent());
             $notification = json_decode($request->getContent(), true);
+            WebhookResponseHistoryFactory::new([
+                'response' => json_encode($notification, true),
+                'eventCode' => $notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"],
+                'provider' => 'Adyen',
+            ])->create();
             if ($notification["notificationItems"][0]["NotificationRequestItem"]["eventCode"] === "RECURRING_CONTRACT") {
                 $shopperReference = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]["shopperReference"];
                 $storedPaymentMethodId = $notification["notificationItems"][0]["NotificationRequestItem"]["additionalData"]['recurring.recurringDetailReference'];
@@ -62,28 +64,10 @@ class AdyenController extends Controller
                         "contract" => "RECURRING",
                         "recurringDetailReference" => $recurringDetailReference,
                         "recurringProcessingModel" => $recurringProcessingModel,
-//                               "frequency" => "daily"
-                        "frequency" => "hourly"
+                        "frequency" => "daily"
                     ]
                 ];
                 $response = $recurring->listRecurringDetails($paymentData);
-
-                $client = new GuzzleHttp();
-                $response = $client->post('https://pal-test.adyen.com/pal/servlet/Recurring/v68/scheduleAccountUpdater', [
-                    'headers' => [
-                        'x-api-key' => "AQElhmfuXNWTK0Qc+iSRhmsokOuMfI5MdedSRQDHo4p3kmBQNtLDfhDBXVsNvuR83LVYjEgiTGAH-nBcqxoUAk+HxWxosXyS7AC4GeaivP5prQOa+FYV/qRo=-fI<xYgxXMB(HEun7",
-                    ],
-                    'json' => [
-                        'merchantAccount' => 'AtopWowTeaECOM',
-                        "reference" => $merchantReference,
-                        "card" => [
-                            "expiryMonth" => "03",
-                            "expiryYear" => "2030",
-                            "holderName" => "Adyen Test",
-                            "number" => "4111111111111111"
-                        ]
-                    ],
-                ]);
             }
         } catch (AdyenException $exception) {
             var_dump($exception->getCode());
