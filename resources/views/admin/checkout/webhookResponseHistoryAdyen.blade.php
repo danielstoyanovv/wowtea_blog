@@ -22,7 +22,20 @@
                                 <td class="">{{ $webhookResponseHistory->provider }}</td>
                                 <td class="">{{ $webhookResponseHistory->created_at  }}</td>
                                 <td class="">
-
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            {{ __('Select') }}
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('admin_test_adyen_webhook_response_history_adyen_details', [
+                                                'webhookResponseHistory' => $webhookResponseHistory]) }}">
+                                                    {{ __('Details') }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

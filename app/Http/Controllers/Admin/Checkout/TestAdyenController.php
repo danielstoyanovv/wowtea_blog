@@ -177,4 +177,15 @@ class TestAdyenController extends Controller
              'data' => WebhookResponseHistory::paginate(20)
          ]);
      }
+
+    /**
+     * @param WebhookResponseHistory $webhookResponseHistory
+     * @return View|Factory|Application
+     */
+    public function webhookResponseHistoryDetails(WebhookResponseHistory $webhookResponseHistory): View|Factory|Application
+    {
+        return view('admin.checkout.webhookResponseHistoryAdyenDetails', [
+            'data' => $webhookResponseHistory
+        ]);
+    }
 }

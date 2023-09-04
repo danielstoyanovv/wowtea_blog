@@ -59,6 +59,9 @@ Route::middleware('auth')->group(function () {
                     ->name('admin_test_adyen_webhook');
                 Route::get('/webhook-response-history', [TestAdyenController::class, 'webhookResponseHistory'])
                     ->name('admin_test_adyen_webhook_response_history_page');
+                Route::get('{webhookResponseHistory}/webhook-response-history-adyen-details', [
+                    TestAdyenController::class, 'webhookResponseHistoryDetails'])
+                    ->name('admin_test_adyen_webhook_response_history_adyen_details');
             });
         });
     });
